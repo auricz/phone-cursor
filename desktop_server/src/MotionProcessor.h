@@ -25,7 +25,13 @@ public:
     void Calibrate(const Protocol::CalibratePacket& packet);
     void OnSensor(const Protocol::SensorPacket& packet, InputSimulator& inputSimulator);
 
+    void setYawMaxPercent(float newMax);
+    void setPitchMaxPercent(float newMax);
+
 private:
     bool calibrated_ = false;
     Matrix3x3 referenceRotation_{};
+
+    float yawMaxPercent = 1.0;
+    float pitchMaxPercent = 1.0;
 };

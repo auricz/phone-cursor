@@ -34,16 +34,20 @@ void MotionProcessor::OnSensor(const Protocol::SensorPacket& packet, InputSimula
     const float yawRadians = std::atan2(delta.m[1][0], delta.m[0][0]);
     const float pitchRadians = std::atan2(delta.m[2][1], delta.m[2][2]);
 
-    const float maxAngleRadians = kQuarterTurnRadians * Config::kEdgeRotationFraction;
+    const float maxAngleRadiansX = kQuarterTurnRadians * yawMaxPercent;
+    const float maxAngleRadiansY = kQuarterTurnRadians * pitchMaxPercent;
 
     // Yawing the phone's top edge to the right reads as a negative yaw
     // angle (see MotionProcessor.h), so it's negated to make "yaw right"
     // move the cursor right. Pitching up reads as positive, and the screen
     // must move the cursor toward smaller Y (up), so pitch is negated too.
-    float xFraction = -yawRadians / maxAngleRadians;
-    float yFraction = -pitchRadians / maxAngleRadians;
+    float xFraction = -yawRadians / maxAngleRadiansX;
+    float yFraction = -pitchRadians / maxAngleRadiansY;
     if (Config::kInvertYaw) xFraction = -xFraction;
     if (Config::kInvertPitch) yFraction = -yFraction;
 
     inputSimulator.MoveCursorTo(std::clamp(xFraction, -1.f, 1.f), std::clamp(yFraction, -1.f, 1.f));
 }
+
+void MotionProcessor::setYawMaxPercent(float newMax) { yawMaxPercent = std::clamp(newMax, 0.0f, 1.0f); }
+void MotionProcessor::setPitchMaxPercent(float newMax) { pitchMaxPercent = std::clamp(newMax, 0.0f, 1.0f); }

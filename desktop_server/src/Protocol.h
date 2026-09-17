@@ -30,6 +30,7 @@ enum class PacketType : uint8_t {
     kClick = 2,
     kKey = 3,
     kCalibrate = 4,
+    kConfig = 5,
 };
 
 enum class Button : uint8_t {
@@ -40,6 +41,11 @@ enum class Button : uint8_t {
 enum class KeyAction : uint8_t {
     kChar = 0,
     kBackspace = 1,
+};
+
+enum class ConfigOpt : uint8_t {
+    yawMaxPercent = 0,
+    pitchMaxPercent = 1,
 };
 
 struct SensorPacket {
@@ -59,7 +65,15 @@ struct CalibratePacket {
     float qw, qx, qy, qz;
 };
 
-using Packet = std::variant<SensorPacket, ClickPacket, KeyPacket, CalibratePacket>;
+struct ConfigPacket {
+    uint8_t option;
+    union {
+        uint32_t i;
+        float f;
+    } data;
+};
+
+using Packet = std::variant<SensorPacket, ClickPacket, KeyPacket, CalibratePacket, ConfigPacket>;
 
 namespace detail {
 
@@ -101,6 +115,13 @@ inline std::optional<Packet> Parse(const uint8_t* data, size_t length) {
             packet.qx = detail::ReadFloat(data + 5);
             packet.qy = detail::ReadFloat(data + 9);
             packet.qz = detail::ReadFloat(data + 13);
+            return packet;
+        }
+        case PacketType::kConfig: {
+            if (length < 6) return std::nullopt;
+            ConfigPacket packet{};
+            packet.option = data[1];
+            std::memcpy(&packet.data, data + 2, sizeof(uint32_t));
             return packet;
         }
         default:

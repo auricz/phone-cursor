@@ -22,4 +22,17 @@ void PacketHandler::Handle(const uint8_t* data, size_t length) {
     } else if (auto* calibrate = std::get_if<Protocol::CalibratePacket>(&*packet)) {
         motionProcessor_.Calibrate(*calibrate);
     }
+    else if (auto* config = std::get_if<Protocol::ConfigPacket>(&*packet)) {
+        uint8_t option = config->option;
+        switch (option) {
+            case (int)Protocol::ConfigOpt::yawMaxPercent: {
+                motionProcessor_.setYawMaxPercent(config->data.f);
+                return;
+            }
+            case (int)Protocol::ConfigOpt::pitchMaxPercent: {
+                motionProcessor_.setPitchMaxPercent(config->data.f);
+                return;
+            }
+        }
+    }
 }
