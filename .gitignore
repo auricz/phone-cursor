@@ -1,0 +1,55 @@
+# OS-generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.iml
+.claude/settings.local.json
+
+# Secrets / local env
+.env
+.env.*
+*.local
+
+# ---- desktop_server (C++ / CMake / Visual Studio) ----
+desktop_server/out/
+desktop_server/.vs/
+desktop_server/.cxx/
+desktop_server/build/
+desktop_server/x64/
+desktop_server/x86/
+desktop_server/Debug/
+desktop_server/Release/
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+_deps/
+
+# ---- rendezvous_server (TypeScript / Cloudflare Workers) ----
+rendezvous_server/node_modules/
+rendezvous_server/dist/
+rendezvous_server/.wrangler/
+rendezvous_server/.dev.vars
+*.tsbuildinfo
+
+# ---- android_app (Android Studio / Gradle) ----
+# Nested .gitignore files under android_app/ handle most Gradle/Android
+# build output; these cover cases that could otherwise leak into git
+# from the repo root.
+android_app/local.properties
+android_app/.gradle/
+android_app/**/build/
+android_app/.cxx/
+android_app/.idea/
+android_app/captures/

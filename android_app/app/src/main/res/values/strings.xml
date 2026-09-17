@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PhoneCursor</string>
+
+    <string name="label_ip">PC IP address</string>
+    <string name="label_port">Port</string>
+    <string name="hint_ip">e.g. 192.168.1.42</string>
+
+    <string name="button_connect">Connect</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="button_left_click">Left Click</string>
+    <string name="button_right_click">Right Click</string>
+    <string name="button_keyboard">Keyboard</string>
+    <string name="button_recalibrate">Recalibrate</string>
+    <string name="hint_recalibrate">Lay phone flat, screen up, top edge pointed at the screen, then tap Recalibrate</string>
+
+    <string name="status_disconnected">Disconnected</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_connected">Connected to %1$s:%2$d</string>
+    <string name="status_error_invalid_ip">Enter a valid IP address</string>
+    <string name="status_error_invalid_port">Enter a valid port (1–65535)</string>
+
+    <string name="hidden_keyboard_input_description">Hidden field used to capture keyboard input</string>
+</resources>
