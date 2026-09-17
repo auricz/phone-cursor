@@ -46,6 +46,8 @@ enum class KeyAction : uint8_t {
 enum class ConfigOpt : uint8_t {
     yawMaxPercent = 0,
     pitchMaxPercent = 1,
+    yawInvert = 2,
+    pitchInvert = 3,
 };
 
 struct SensorPacket {

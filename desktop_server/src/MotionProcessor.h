@@ -28,10 +28,16 @@ public:
     void setYawMaxPercent(float newMax);
     void setPitchMaxPercent(float newMax);
 
+    void setInvertYaw(bool invert);
+    void setInvertPitch(bool invert);
+
 private:
     bool calibrated_ = false;
     Matrix3x3 referenceRotation_{};
 
     float yawMaxPercent = 1.0;
     float pitchMaxPercent = 1.0;
+
+    bool invertYaw = false;
+    bool invertPitch = false;
 };
