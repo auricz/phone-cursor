@@ -43,14 +43,9 @@ void MotionProcessor::OnSensor(const Protocol::SensorPacket& packet, InputSimula
     // must move the cursor toward smaller Y (up), so pitch is negated too.
     float xFraction = -yawRadians / maxAngleRadiansX;
     float yFraction = -pitchRadians / maxAngleRadiansY;
-    if (invertYaw) xFraction = -xFraction;
-    if (invertPitch) yFraction = -yFraction;
 
     inputSimulator.MoveCursorTo(std::clamp(xFraction, -1.f, 1.f), std::clamp(yFraction, -1.f, 1.f));
 }
 
 void MotionProcessor::setYawMaxPercent(float newMax) { yawMaxPercent = std::clamp(newMax, 0.0f, 1.0f); }
 void MotionProcessor::setPitchMaxPercent(float newMax) { pitchMaxPercent = std::clamp(newMax, 0.0f, 1.0f); }
-
-void MotionProcessor::setInvertYaw(bool invert) { invertYaw = invert; }
-void MotionProcessor::setInvertPitch(bool invert) { invertPitch = invert; }

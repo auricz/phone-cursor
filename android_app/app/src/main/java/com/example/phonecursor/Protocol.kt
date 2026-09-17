@@ -15,10 +15,14 @@ import java.nio.ByteOrder
  *                                                                  (4 bytes)
  *   CALIBRATE : u8 type=4, float32 qw, qx, qy, qz (device
  *               orientation to treat as the reference pose)      (17 bytes)
+ *   CONFIG    : u8 type=5, u8 option (0=yawMaxPercent,
+ *               1=pitchMaxPercent), float32 value                 (6 bytes)
  *
  * The desktop does all world-frame projection and angle-to-cursor mapping
  * (see desktop_server's MotionProcessor); the phone only relays its raw
- * orientation. Keep both sides of this format in sync when changing it.
+ * orientation, adjusted for the user's invert preferences (see
+ * MotionTracker) and the max-angle sliders (see MainActivity). Keep both
+ * sides of this format in sync when changing it.
  */
 object Protocol {
 
@@ -26,12 +30,16 @@ object Protocol {
     private const val TYPE_CLICK: Byte = 2
     private const val TYPE_KEY: Byte = 3
     private const val TYPE_CALIBRATE: Byte = 4
+    private const val TYPE_CONFIG: Byte = 5
 
     const val BUTTON_LEFT: Byte = 0
     const val BUTTON_RIGHT: Byte = 1
 
     const val KEY_ACTION_CHAR: Byte = 0
     const val KEY_ACTION_BACKSPACE: Byte = 1
+
+    const val CONFIG_OPT_YAW_MAX_PERCENT: Byte = 0
+    const val CONFIG_OPT_PITCH_MAX_PERCENT: Byte = 1
 
     fun sensor(qw: Float, qx: Float, qy: Float, qz: Float): ByteArray =
         ByteBuffer.allocate(17)
@@ -74,5 +82,13 @@ object Protocol {
             .putFloat(qx)
             .putFloat(qy)
             .putFloat(qz)
+            .array()
+
+    fun config(option: Byte, value: Float): ByteArray =
+        ByteBuffer.allocate(6)
+            .order(ByteOrder.LITTLE_ENDIAN)
+            .put(TYPE_CONFIG)
+            .put(option)
+            .putFloat(value)
             .array()
 }

@@ -13,6 +13,11 @@
     <string name="button_recalibrate">Recalibrate</string>
     <string name="hint_recalibrate">Lay phone flat, screen up, top edge pointed at the screen, then tap Recalibrate</string>
 
+    <string name="label_max_yaw_angle">Max Yaw Angle: %1$d°</string>
+    <string name="label_max_pitch_angle">Max Pitch Angle: %1$d°</string>
+    <string name="checkbox_invert_yaw">Invert Yaw</string>
+    <string name="checkbox_invert_pitch">Invert Pitch</string>
+
     <string name="status_disconnected">Disconnected</string>
     <string name="status_connecting">Connecting…</string>
     <string name="status_connected">Connected to %1$s:%2$d</string>

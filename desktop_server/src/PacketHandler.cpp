@@ -33,14 +33,6 @@ void PacketHandler::Handle(const uint8_t* data, size_t length) {
                 motionProcessor_.setPitchMaxPercent(config->data.f);
                 return;
             }
-            case (int)Protocol::ConfigOpt::yawInvert: {
-                motionProcessor_.setInvertYaw(config->data.i == (uint8_t)1);
-                return;
-            }
-            case (int)Protocol::ConfigOpt::pitchInvert: {
-                motionProcessor_.setInvertPitch(config->data.i == (uint8_t)1);
-                return;
-            }
         }
     }
 }

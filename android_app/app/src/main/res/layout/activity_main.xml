@@ -112,6 +112,41 @@
             android:text="@string/hint_recalibrate"
             android:textSize="12sp" />
 
+        <TextView
+            android:id="@+id/maxYawLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/maxYawSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/maxPitchLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/maxPitchSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/invertYawCheckbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/checkbox_invert_yaw" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/invertPitchCheckbox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/checkbox_invert_pitch" />
+
         <Button
             android:id="@+id/disconnectButton"
             android:layout_width="match_parent"
