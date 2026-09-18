@@ -5,7 +5,13 @@
     <string name="label_port">Port</string>
     <string name="hint_ip">e.g. 192.168.1.42</string>
 
+    <string name="mode_local">Local</string>
+    <string name="mode_internet">Internet</string>
+    <string name="label_pairing_code">Pairing code</string>
+    <string name="hint_pairing_code">Code shown on the desktop</string>
+
     <string name="button_connect">Connect</string>
+    <string name="button_cancel">Cancel</string>
     <string name="button_disconnect">Disconnect</string>
     <string name="button_left_click">Left Click</string>
     <string name="button_right_click">Right Click</string>
@@ -21,8 +27,15 @@
     <string name="status_disconnected">Disconnected</string>
     <string name="status_connecting">Connecting…</string>
     <string name="status_connected">Connected to %1$s:%2$d</string>
+    <string name="status_connected_simple">Connected!</string>
     <string name="status_error_invalid_ip">Enter a valid IP address</string>
     <string name="status_error_invalid_port">Enter a valid port (1–65535)</string>
+    <string name="status_error_invalid_pairing_code">Enter the pairing code shown on the desktop</string>
+    <string name="status_error_generic">%1$s</string>
+    <string name="status_rejected">The desktop declined the connection</string>
+
+    <string name="label_confirmation_code">%1$06d</string>
+    <string name="text_confirmation_instructions">Compare this code with the one shown on the desktop, then accept it there.</string>
 
     <string name="hidden_keyboard_input_description">Hidden field used to capture keyboard input</string>
 </resources>

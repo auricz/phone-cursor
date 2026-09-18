@@ -14,7 +14,11 @@ add_executable(PhoneCursorServer
     src/InputSimulator.cpp
     src/PacketHandler.cpp
     src/MotionProcessor.cpp
+    src/Crypto.cpp
+    src/SecureSession.cpp
+    src/StunClient.cpp
+    src/RendezvousClient.cpp
 )
 
 target_include_directories(PhoneCursorServer PRIVATE src)
-target_link_libraries(PhoneCursorServer PRIVATE ws2_32 user32)
+target_link_libraries(PhoneCursorServer PRIVATE ws2_32 user32 bcrypt winhttp)

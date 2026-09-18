@@ -1,0 +1,11 @@
+name = "phonecursor-rendezvous"
+main = "src/index.ts"
+compatibility_date = "2024-09-25"
+
+[[durable_objects.bindings]]
+name = "PAIRING_SESSION"
+class_name = "PairingSession"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["PairingSession"]

@@ -16,6 +16,6 @@ The phone app allows for customizing buttons, such as resizing, rearranging, and
 - `desktop_server/` - Windows desktop app to install on Windows PC. Uses C++ for networking and simulating keyboard/mouse input.
 - `rendezvous_server/` - A server to let the phone and PC connect to one another if on different private networks. Uses TS since it will be hosted using Cloudflare Workers.
 
-<!-- ## Security
+## Security
 
-All UDP traffic from the phone to the PC must have integrity protected, and also confidentiality for keyboard input. Mouse movement data (sensor data) do not need to be confidential.  -->
+All UDP traffic from the phone to the PC must have integrity protected, and also confidentiality for keyboard input. Mouse movement data (sensor data) do not need to be confidential. 

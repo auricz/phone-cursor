@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var motionTracker: MotionTracker
 
     private var previousKeyboardText = ""
+    private var isInternetMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +33,16 @@ class MainActivity : AppCompatActivity() {
         motionTracker = MotionTracker(this, ::onSensorSample, ::onCalibrate)
 
         binding.portInput.setText(Config.DEFAULT_PORT.toString())
+        binding.connectionModeToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
+            if (!isChecked) return@addOnButtonCheckedListener
+            isInternetMode = checkedId == R.id.internetModeButton
+            binding.localFields.visibility = if (isInternetMode) View.GONE else View.VISIBLE
+            binding.internetFields.visibility = if (isInternetMode) View.VISIBLE else View.GONE
+        }
         binding.connectButton.setOnClickListener { onConnectClicked() }
+        binding.cancelConnectionButton.setOnClickListener { disconnect() }
         binding.disconnectButton.setOnClickListener { disconnect() }
+        observeHandshakeState()
         binding.leftClickButton.setOnClickListener {
             networkClient.send(Protocol.click(Protocol.BUTTON_LEFT))
         }
@@ -130,6 +138,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onConnectClicked() {
+        if (isInternetMode) {
+            connectInternet()
+        } else {
+            connectLocal()
+        }
+    }
+
+    private fun connectLocal() {
         val host = binding.ipInput.text.toString().trim()
         val portText = binding.portInput.text.toString().trim()
         val port = portText.toIntOrNull()
@@ -145,36 +161,84 @@ class MainActivity : AppCompatActivity() {
 
         binding.statusText.text = getString(R.string.status_connecting)
         lifecycleScope.launch {
-            val error = try {
-                networkClient.connect(host, port)
-                null
+            try {
+                networkClient.connectLocal(host, port)
             } catch (e: IOException) {
-                e.message ?: "Connection failed"
+                binding.statusText.text = getString(R.string.status_error_generic, e.message ?: "Connection failed")
             }
-
-            if (error != null) {
-                binding.statusText.text = error
-                return@launch
-            }
-
-            binding.statusText.text = getString(R.string.status_connected, host, port)
-            binding.connectionPanel.visibility = View.GONE
-            binding.controlsPanel.visibility = View.VISIBLE
-            // Push the sliders' current values: the desktop has no memory of
-            // a prior session, so this keeps it in sync with what's on screen.
-            sendMaxAngleConfig(Protocol.CONFIG_OPT_YAW_MAX_PERCENT, binding.maxYawSlider.value)
-            sendMaxAngleConfig(Protocol.CONFIG_OPT_PITCH_MAX_PERCENT, binding.maxPitchSlider.value)
-            motionTracker.start()
-            // Calibrate immediately: the connect flow asks the user to have
-            // the phone lying flat, screen up, top edge toward the screen.
-            motionTracker.calibrate()
         }
+    }
+
+    private fun connectInternet() {
+        val pairingCode = binding.pairingCodeInput.text.toString().trim()
+        if (pairingCode.length != Config.PAIRING_CODE_DIGITS || pairingCode.toIntOrNull() == null) {
+            binding.statusText.text = getString(R.string.status_error_invalid_pairing_code)
+            return
+        }
+
+        binding.statusText.text = getString(R.string.status_connecting)
+        lifecycleScope.launch {
+            try {
+                networkClient.connectInternet(pairingCode)
+            } catch (e: IOException) {
+                binding.statusText.text = getString(R.string.status_error_generic, e.message ?: "Connection failed")
+            }
+        }
+    }
+
+    /** Reacts to the secure handshake's progress (see NetworkClient.HandshakeState). */
+    private fun observeHandshakeState() {
+        lifecycleScope.launch {
+            networkClient.state.collect { state ->
+                when (state) {
+                    is NetworkClient.HandshakeState.Connecting -> {
+                        // Already showing "Connecting…" from the button click; nothing more to do.
+                    }
+
+                    is NetworkClient.HandshakeState.AwaitingConfirmation -> {
+                        // Local mode confirms automatically almost immediately - only worth
+                        // showing the code (and waiting on it) when the user chose Internet mode.
+                        if (isInternetMode) {
+                            binding.connectionPanel.visibility = View.GONE
+                            binding.confirmationPanel.visibility = View.VISIBLE
+                            binding.confirmationCodeText.text =
+                                getString(R.string.label_confirmation_code, state.code)
+                        }
+                    }
+
+                    is NetworkClient.HandshakeState.Confirmed -> onConnected()
+
+                    is NetworkClient.HandshakeState.Rejected -> {
+                        networkClient.disconnect()
+                        binding.confirmationPanel.visibility = View.GONE
+                        binding.connectionPanel.visibility = View.VISIBLE
+                        binding.statusText.text = state.reason
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onConnected() {
+        binding.confirmationPanel.visibility = View.GONE
+        binding.connectionPanel.visibility = View.GONE
+        binding.controlsPanel.visibility = View.VISIBLE
+        binding.statusText.text = getString(R.string.status_connected_simple)
+        // Push the sliders' current values: the desktop has no memory of a
+        // prior session, so this keeps it in sync with what's on screen.
+        sendMaxAngleConfig(Protocol.CONFIG_OPT_YAW_MAX_PERCENT, binding.maxYawSlider.value)
+        sendMaxAngleConfig(Protocol.CONFIG_OPT_PITCH_MAX_PERCENT, binding.maxPitchSlider.value)
+        motionTracker.start()
+        // Calibrate immediately: the connect flow asks the user to have the
+        // phone lying flat, screen up, top edge toward the screen.
+        motionTracker.calibrate()
     }
 
     private fun disconnect() {
         motionTracker.stop()
         networkClient.disconnect()
         binding.statusText.text = getString(R.string.status_disconnected)
+        binding.confirmationPanel.visibility = View.GONE
         binding.connectionPanel.visibility = View.VISIBLE
         binding.controlsPanel.visibility = View.GONE
     }
@@ -191,8 +255,7 @@ class MainActivity : AppCompatActivity() {
         previousKeyboardText = ""
         binding.hiddenKeyboardInput.setText("")
         binding.hiddenKeyboardInput.requestFocus()
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(binding.hiddenKeyboardInput, InputMethodManager.SHOW_IMPLICIT)
+        WindowInsetsControllerCompat(window, binding.hiddenKeyboardInput).show(WindowInsetsCompat.Type.ime())
     }
 
     /** Diffs each edit against the previous value and streams char/backspace key packets. */

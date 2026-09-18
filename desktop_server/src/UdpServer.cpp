@@ -66,7 +66,18 @@ void UdpServer::Run(const PacketCallback& onPacket) {
             continue;
         }
         if (received > 0) {
-            onPacket(buffer.data(), static_cast<size_t>(received));
+            UdpEndpoint sender{senderAddr.sin_addr.S_un.S_addr, ntohs(senderAddr.sin_port)};
+            onPacket(sender, buffer.data(), static_cast<size_t>(received));
         }
     }
+}
+
+void UdpServer::SendTo(const UdpEndpoint& recipient, const uint8_t* data, size_t length) {
+    sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_addr.S_un.S_addr = recipient.ipv4;
+    addr.sin_port = htons(recipient.port);
+
+    sendto(static_cast<SOCKET>(socket_), reinterpret_cast<const char*>(data), static_cast<int>(length), 0,
+           reinterpret_cast<const sockaddr*>(&addr), sizeof(addr));
 }

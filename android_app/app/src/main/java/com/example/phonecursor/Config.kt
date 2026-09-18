@@ -40,4 +40,31 @@ object Config {
     // packet is sent - this lets the user move the desktop mouse by hand
     // without the phone's last reading fighting it.
     const val MOTION_EPSILON_DEGREES = 0.8
+
+    // Rendezvous server (see rendezvous_server/), used only in Internet mode.
+    // Update after deploying your own instance with `npm run deploy` from
+    // rendezvous_server/ (must match desktop_server's Config.h value).
+    const val RENDEZVOUS_HOST = "phonecursor-rendezvous.example.workers.dev"
+    const val RENDEZVOUS_USE_TLS = true
+
+    // Public STUN server used to discover this device's internet-facing
+    // IP:port for hole punching (see StunClient). Any standard STUN server works.
+    const val STUN_SERVER_HOST = "stun.l.google.com"
+    const val STUN_SERVER_PORT = 19302
+    const val STUN_TIMEOUT_MS = 3000
+
+    // How long to wait for the desktop to appear over the internet
+    // (rendezvous + hole punch + handshake) before giving up.
+    const val INTERNET_HANDSHAKE_TIMEOUT_MS = 20000L
+
+    // Digits in both the pairing code (rendezvous lookup) and the
+    // confirmation code (visual comparison before an Internet connection is trusted).
+    const val PAIRING_CODE_DIGITS = 6
+    const val CONFIRMATION_CODE_DIGITS = 6
+
+    // HKDF info strings used to derive independent keys/codes from one ECDH
+    // shared secret. Must match desktop_server's Config.h exactly.
+    const val HKDF_INFO_CONFIRMATION_CODE = "phonecursor-confirmation-code-v1"
+    const val HKDF_INFO_PHONE_TO_DESKTOP_KEY = "phonecursor-phone-to-desktop-key-v1"
+    const val HKDF_INFO_DESKTOP_TO_PHONE_KEY = "phonecursor-desktop-to-phone-key-v1"
 }
