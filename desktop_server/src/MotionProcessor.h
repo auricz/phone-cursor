@@ -17,9 +17,10 @@
 //     into a yaw angle (turning left/right) and a pitch angle (tilting up/
 //     down).
 //   - Those angles map directly to an absolute cursor position: flat is
-//     screen center, and Config::kEdgeRotationFraction of a 90-degree turn
-//     reaches the screen edge. There is no velocity or integration - the
-//     cursor position is a pure function of the phone's current tilt.
+//     screen center, and the fraction of a 90-degree turn set by
+//     setYawMaxPercent/setPitchMaxPercent reaches the screen edge. There is
+//     no velocity or integration - the cursor position is a pure function of
+//     the phone's current tilt.
 class MotionProcessor {
 public:
     void Calibrate(const Protocol::CalibratePacket& packet);

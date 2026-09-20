@@ -23,9 +23,8 @@ constexpr int kStunTimeoutMs = 3000;
 // hole punch + handshake) before giving up.
 constexpr int kInternetHandshakeTimeoutMs = 20000;
 
-// Digits in both the pairing code (rendezvous lookup) and the confirmation
-// code (visual comparison before an Internet connection is trusted).
-constexpr int kPairingCodeDigits = 6;
+// Digits in the confirmation code (visual comparison before an Internet
+// connection is trusted).
 constexpr int kConfirmationCodeDigits = 6;
 
 // HKDF info strings used to derive independent keys/codes from one ECDH

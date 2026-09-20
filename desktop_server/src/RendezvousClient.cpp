@@ -19,14 +19,6 @@ std::wstring Widen(const std::string& s) {
     return result;
 }
 
-std::string Narrow(const std::wstring& s) {
-    if (s.empty()) return "";
-    int len = WideCharToMultiByte(CP_UTF8, 0, s.data(), static_cast<int>(s.size()), nullptr, 0, nullptr, nullptr);
-    std::string result(len, '\0');
-    WideCharToMultiByte(CP_UTF8, 0, s.data(), static_cast<int>(s.size()), result.data(), len, nullptr, nullptr);
-    return result;
-}
-
 // Pulls the value out of a flat {"key":"value"} JSON object. Only meant for
 // this project's own tiny, fixed-shape rendezvous server responses - not a
 // general JSON parser.
