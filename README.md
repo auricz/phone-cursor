@@ -1,4 +1,4 @@
-# PhoneCursor
+# Phone Cursor
 
 Use your Android phone as a mouse and keyboard for a Windows PC. The cursor follows the phone's gyroscope: tilt up/down (pitch) and turn left/right (yaw). The phone app also has on-screen buttons to send click, and a keyboard button sends typed text. Traffic is UDP for low latency, integrity-protected, and keyboard input is encrypted.
 
