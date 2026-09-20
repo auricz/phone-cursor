@@ -3,6 +3,7 @@ package com.example.phonecursor
 import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
+import java.net.Inet4Address
 import java.net.InetAddress
 
 /**
@@ -40,7 +41,10 @@ object StunClient {
         val originalTimeout = socket.soTimeout
         return try {
             socket.soTimeout = timeoutMs
-            val address = InetAddress.getByName(stunHost)
+            // IPv4 only, like desktop_server's StunClient: the parser and the
+            // "ip:port" candidates exchanged with the desktop are IPv4-only, and
+            // getByName may otherwise pick the server's IPv6 address.
+            val address = InetAddress.getAllByName(stunHost).firstOrNull { it is Inet4Address } ?: return null
             socket.send(DatagramPacket(request, request.size, address, stunPort))
 
             val buffer = ByteArray(512)

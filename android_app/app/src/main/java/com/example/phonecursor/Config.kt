@@ -9,7 +9,6 @@ object Config {
 
     // Networking
     const val DEFAULT_PORT = 24800
-    const val SOCKET_TIMEOUT_MS = 2000
 
     // How often we sample/send sensor data to the desktop server.
     const val SEND_RATE_HZ = 60
@@ -44,7 +43,7 @@ object Config {
     // Rendezvous server (see rendezvous_server/), used only in Internet mode.
     // Update after deploying your own instance with `npm run deploy` from
     // rendezvous_server/ (must match desktop_server's Config.h value).
-    const val RENDEZVOUS_HOST = "phonecursor-rendezvous.example.workers.dev"
+    const val RENDEZVOUS_HOST = "127.0.0.1:8787"
     const val RENDEZVOUS_USE_TLS = false
 
     // Public STUN server used to discover this device's internet-facing

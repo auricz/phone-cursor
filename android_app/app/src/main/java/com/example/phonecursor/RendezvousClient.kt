@@ -10,7 +10,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -25,22 +24,7 @@ class RendezvousClient(private val host: String, private val useTls: Boolean) {
     private val client = OkHttpClient()
     private val incoming = LinkedBlockingQueue<String>()
     private var webSocket: WebSocket? = null
-
-    private val httpScheme get() = if (useTls) "https" else "http"
     private val wsScheme get() = if (useTls) "wss" else "ws"
-
-    /** POST /session. Returns the newly allocated pairing code. Throws on failure. */
-    suspend fun requestPairingCode(): String = withContext(Dispatchers.IO) {
-        val request = Request.Builder()
-            .url("$httpScheme://$host/session")
-            .post(ByteArray(0).toRequestBody(null))
-            .build()
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw IOException("Rendezvous server returned ${response.code}")
-            val body = response.body?.string() ?: throw IOException("Empty response from rendezvous server")
-            extractJsonStringField(body, "code") ?: throw IOException("Unexpected response: $body")
-        }
-    }
 
     /**
      * Opens the WebSocket for an existing pairing code under this device's
@@ -86,17 +70,5 @@ class RendezvousClient(private val host: String, private val useTls: Boolean) {
         404 -> "Pairing code not found or expired"
         409 -> "That role is already connected with this pairing code"
         else -> t.message ?: "WebSocket connection failed"
-    }
-
-    /** Pulls the value out of a flat {"key":"value"} JSON object. Only meant for this
-     * project's own tiny, fixed-shape rendezvous server responses - not a general JSON parser. */
-    private fun extractJsonStringField(json: String, key: String): String? {
-        val needle = "\"$key\":\""
-        val start = json.indexOf(needle)
-        if (start == -1) return null
-        val begin = start + needle.length
-        val end = json.indexOf('"', begin)
-        if (end == -1) return null
-        return json.substring(begin, end)
     }
 }

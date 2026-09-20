@@ -87,18 +87,13 @@ class MotionTracker(
 
     /**
      * Applies the invert checkboxes to the latest reading before it's sent.
-     * The desktop derives yaw/pitch from delta = reference^-1 * current (see
-     * MotionProcessor), and negating a quaternion's (y, z) components is
-     * equivalent to conjugating that rotation by a 180-degree turn about the
-     * local right/pitch axis - which flips only the decomposed yaw angle, and
-     * (being a conjugation) distributes cleanly over that reference/current
-     * combination. Negating (x, y) is the same conjugation about the local
+     * Negating (x, y) is the same conjugation about the local
      * up/yaw axis instead, which flips only pitch. Applying it here, before
      * both CALIBRATE and SENSOR sends, keeps the reference and every sample
      * consistent.
      */
     private fun invertedQuaternion(): FloatArray {
-        var w = latestQuaternion[0]
+        val w = latestQuaternion[0]
         var x = latestQuaternion[1]
         var y = latestQuaternion[2]
         var z = latestQuaternion[3]

@@ -120,7 +120,25 @@ object Crypto {
         return okm
     }
 
-    data class SealedPacket(val tag: ByteArray, val ciphertext: ByteArray)
+    data class SealedPacket(val tag: ByteArray, val ciphertext: ByteArray) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as SealedPacket
+
+            if (!tag.contentEquals(other.tag)) return false
+            if (!ciphertext.contentEquals(other.ciphertext)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = tag.contentHashCode()
+            result = 31 * result + ciphertext.contentHashCode()
+            return result
+        }
+    }
 
     /** AES-256-GCM seal. Pass an empty plaintext (with the data instead placed in aad) to
      * authenticate without encrypting - used for packet types that only need integrity. */

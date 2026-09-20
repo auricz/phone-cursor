@@ -14,6 +14,7 @@ import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * UDP client plus the secure handshake state machine (see SecureSession).
@@ -66,13 +67,13 @@ class NetworkClient {
         val newSocket = DatagramSocket()
         socket = newSocket
 
-        val publicAddr = StunClient.discoverPublicAddress(
+        val publicAdder = StunClient.discoverPublicAddress(
             newSocket, Config.STUN_SERVER_HOST, Config.STUN_SERVER_PORT, Config.STUN_TIMEOUT_MS,
         ) ?: throw IOException("Could not reach the STUN server - check your internet connection")
 
         val rendezvous = RendezvousClient(Config.RENDEZVOUS_HOST, Config.RENDEZVOUS_USE_TLS)
         rendezvous.connect(pairingCode, "phone")
-        rendezvous.sendCandidate("${publicAddr.ip}:${publicAddr.port}")
+        rendezvous.sendCandidate("${publicAdder.ip}:${publicAdder.port}")
         val peerCandidateText = rendezvous.receiveCandidate(Config.INTERNET_HANDSHAKE_TIMEOUT_MS)
             ?: throw IOException("Timed out waiting for the desktop - check the pairing code and try again")
         rendezvous.close()
@@ -96,7 +97,7 @@ class NetworkClient {
             } catch (_: IOException) {
                 // Ignored: hole punching is best-effort.
             }
-            delay(200)
+            delay(200.milliseconds)
         }
 
         startHandshake()
@@ -126,7 +127,7 @@ class NetworkClient {
                 val packet = DatagramPacket(buffer, buffer.size)
                 try {
                     currentSocket.receive(packet)
-                } catch (e: IOException) {
+                } catch (_: IOException) {
                     break // socket closed
                 }
                 handleIncoming(packet.data.copyOfRange(0, packet.length))

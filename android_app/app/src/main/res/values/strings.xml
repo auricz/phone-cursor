@@ -26,13 +26,11 @@
 
     <string name="status_disconnected">Disconnected</string>
     <string name="status_connecting">Connecting…</string>
-    <string name="status_connected">Connected to %1$s:%2$d</string>
     <string name="status_connected_simple">Connected!</string>
     <string name="status_error_invalid_ip">Enter a valid IP address</string>
     <string name="status_error_invalid_port">Enter a valid port (1–65535)</string>
     <string name="status_error_invalid_pairing_code">Enter the pairing code shown on the desktop</string>
     <string name="status_error_generic">%1$s</string>
-    <string name="status_rejected">The desktop declined the connection</string>
 
     <string name="label_confirmation_code">%1$06d</string>
     <string name="text_confirmation_instructions">Compare this code with the one shown on the desktop, then accept it there.</string>
