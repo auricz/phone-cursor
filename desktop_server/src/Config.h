@@ -9,9 +9,9 @@ constexpr unsigned short kDefaultPort = 24800;
 constexpr int kReceiveBufferSize = 1024;
 
 // Rendezvous server (see rendezvous_server/), used only in Internet mode.
-constexpr const char* kRendezvousHost = "localhost";
-constexpr uint16_t kRendezvousPort = 8787;
-constexpr bool kRendezvousUseTls = false;
+constexpr const char* kRendezvousHost = "pc-rendezvous.auricz.workers.dev";
+constexpr uint16_t kRendezvousPort = 443;
+constexpr bool kRendezvousUseTls = true;
 
 // Public STUN server used to discover this device's internet-facing
 // IP:port for hole punching (see StunClient). Any standard STUN server works.

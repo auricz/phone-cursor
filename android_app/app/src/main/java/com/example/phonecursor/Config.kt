@@ -43,8 +43,8 @@ object Config {
     // Rendezvous server (see rendezvous_server/), used only in Internet mode.
     // Update after deploying your own instance with `npm run deploy` from
     // rendezvous_server/ (must match desktop_server's Config.h value).
-    const val RENDEZVOUS_HOST = "127.0.0.1:8787"
-    const val RENDEZVOUS_USE_TLS = false
+    const val RENDEZVOUS_HOST = "pc-rendezvous.auricz.workers.dev"
+    const val RENDEZVOUS_USE_TLS = true
 
     // Public STUN server used to discover this device's internet-facing
     // IP:port for hole punching (see StunClient). Any standard STUN server works.
