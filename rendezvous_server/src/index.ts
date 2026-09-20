@@ -40,6 +40,8 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
+    console.log({ method: request.method, url: url.href });
+
     if (request.method === 'POST' && url.pathname === '/session') {
       return handleCreateSession(env);
     }

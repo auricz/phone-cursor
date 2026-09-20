@@ -9,3 +9,11 @@ class_name = "PairingSession"
 [exports.PairingSession]
 type = "durable-object"
 storage = "sqlite"
+
+[observability.logs]
+enabled = true
+invocation_logs = false
+head_sampling_rate = 1
+
+[observability.traces]
+enabled = false
