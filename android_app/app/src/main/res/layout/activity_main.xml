@@ -156,7 +156,6 @@
         android:visibility="gone">
 
         <LinearLayout
-            style="?android:attr/buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="24dp"
@@ -165,21 +164,23 @@
 
             <Button
                 android:id="@+id/leftClickButton"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="@string/button_left_click" />
+                android:backgroundTint="@color/click_left"
+                android:text="@string/button_left_click"
+                android:textColor="@color/white" />
 
             <Button
                 android:id="@+id/rightClickButton"
-                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="@string/button_right_click" />
+                android:backgroundTint="@color/click_right"
+                android:text="@string/button_right_click"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

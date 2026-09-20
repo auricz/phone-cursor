@@ -224,6 +224,10 @@ class MainActivity : AppCompatActivity() {
         binding.connectionPanel.visibility = View.GONE
         binding.controlsPanel.visibility = View.VISIBLE
         binding.statusText.text = getString(R.string.status_connected_simple)
+
+        // Automatically close the keyboard if it was open for connection entry.
+        WindowInsetsControllerCompat(window, binding.root).hide(WindowInsetsCompat.Type.ime())
+
         // Push the sliders' current values: the desktop has no memory of a
         // prior session, so this keeps it in sync with what's on screen.
         sendMaxAngleConfig(Protocol.CONFIG_OPT_YAW_MAX_PERCENT, binding.maxYawSlider.value)
