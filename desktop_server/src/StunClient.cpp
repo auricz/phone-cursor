@@ -62,9 +62,8 @@ std::optional<Endpoint> ParseMappedAddress(const uint8_t* attrValue, uint16_t at
 
     Endpoint endpoint{};
     endpoint.port = port;
-    // Endpoint::ipv4 is stored in network byte order (like sockaddr_in), but
-    // we decoded addr into host byte order above; convert back.
     endpoint.ipv4 = htonl(addr);
+
     return endpoint;
 }
 
@@ -140,7 +139,6 @@ std::optional<Endpoint> DiscoverPublicAddress(uintptr_t socketHandle, const std:
     // Restore blocking mode: UdpServer::Run expects to block indefinitely.
     timeout = 0;
     setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<const char*>(&timeout), sizeof(timeout));
-
     return result;
 }
 

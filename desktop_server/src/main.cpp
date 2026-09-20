@@ -59,15 +59,21 @@ std::optional<UdpEndpoint> ParseEndpoint(const std::string& text) {
     return endpoint;
 }
 
-// Rendezvous + STUN + hole punching + confirmation, for Internet mode only.
-void RunInternetSetup(UdpServer& server, PacketHandler& packetHandler) {
+// Asks the STUN server for this device's public address. Reads the reply
+// straight off the socket, so it must run before UdpServer::Run starts on
+// another thread; otherwise that thread would swallow the reply.
+Stun::Endpoint DiscoverPublicAddress(UdpServer& server) {
     std::cout << "Discovering your public address via STUN...\n";
     auto publicAddr = Stun::DiscoverPublicAddress(server.NativeSocketHandle(), Config::kStunServerHost,
                                                    Config::kStunServerPort, Config::kStunTimeoutMs);
     if (!publicAddr) {
         throw std::runtime_error("Could not reach the STUN server - check your internet connection");
     }
+    return *publicAddr;
+}
 
+// Rendezvous + hole punching + confirmation, for Internet mode only.
+void RunInternetSetup(UdpServer& server, PacketHandler& packetHandler, const Stun::Endpoint& publicAddr) {
     RendezvousClient rendezvous(Config::kRendezvousHost, Config::kRendezvousPort, Config::kRendezvousUseTls);
     std::string pairingCode = rendezvous.RequestPairingCode();
     rendezvous.Connect(pairingCode, "desktop");
@@ -77,7 +83,7 @@ void RunInternetSetup(UdpServer& server, PacketHandler& packetHandler) {
     std::cout << " Enter this code on your phone (Internet mode).\n";
     std::cout << "=====================================\n\n";
 
-    rendezvous.SendCandidate(FormatEndpoint(*publicAddr));
+    rendezvous.SendCandidate(FormatEndpoint(publicAddr));
     std::cout << "Waiting for the phone to connect...\n";
     auto peerCandidateText = rendezvous.ReceiveCandidate(Config::kInternetHandshakeTimeoutMs);
     if (!peerCandidateText) {
@@ -124,6 +130,11 @@ int main() {
         UdpServer server(Config::kDefaultPort);
         PacketHandler packetHandler(inputSimulator, motionProcessor, server, /*requireConfirmation=*/internetMode);
 
+        std::optional<Stun::Endpoint> publicAddr;
+        if (internetMode) {
+            publicAddr = DiscoverPublicAddress(server);
+        }
+
         std::thread receiveThread([&] {
             server.Run([&](const UdpEndpoint& sender, const uint8_t* data, size_t length) {
                 packetHandler.Handle(sender, data, length);
@@ -131,7 +142,7 @@ int main() {
         });
 
         if (internetMode) {
-            RunInternetSetup(server, packetHandler);
+            RunInternetSetup(server, packetHandler, *publicAddr);
         } else {
             std::cout << "Listening on UDP port " << Config::kDefaultPort << "\n";
             std::cout << "Find this PC's local IP with 'ipconfig' and enter it in the "

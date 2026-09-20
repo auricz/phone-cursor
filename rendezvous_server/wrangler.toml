@@ -6,6 +6,6 @@ compatibility_date = "2024-09-25"
 name = "PAIRING_SESSION"
 class_name = "PairingSession"
 
-[[migrations]]
-tag = "v1"
-new_classes = ["PairingSession"]
+[exports.PairingSession]
+type = "durable-object"
+storage = "sqlite"

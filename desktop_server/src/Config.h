@@ -9,11 +9,9 @@ constexpr unsigned short kDefaultPort = 24800;
 constexpr int kReceiveBufferSize = 1024;
 
 // Rendezvous server (see rendezvous_server/), used only in Internet mode.
-// Update kRendezvousHost after deploying your own instance with
-// `npm run deploy` from rendezvous_server/.
-constexpr const char* kRendezvousHost = "phonecursor-rendezvous.example.workers.dev";
-constexpr uint16_t kRendezvousPort = 443;
-constexpr bool kRendezvousUseTls = true;
+constexpr const char* kRendezvousHost = "localhost";
+constexpr uint16_t kRendezvousPort = 8787;
+constexpr bool kRendezvousUseTls = false;
 
 // Public STUN server used to discover this device's internet-facing
 // IP:port for hole punching (see StunClient). Any standard STUN server works.

@@ -45,7 +45,7 @@ object Config {
     // Update after deploying your own instance with `npm run deploy` from
     // rendezvous_server/ (must match desktop_server's Config.h value).
     const val RENDEZVOUS_HOST = "phonecursor-rendezvous.example.workers.dev"
-    const val RENDEZVOUS_USE_TLS = true
+    const val RENDEZVOUS_USE_TLS = false
 
     // Public STUN server used to discover this device's internet-facing
     // IP:port for hole punching (see StunClient). Any standard STUN server works.

@@ -1,3 +1,5 @@
+import { DurableObject } from 'cloudflare:workers';
+import { Env } from '.';
 import { Config } from './config';
 
 export type Role = 'desktop' | 'phone';
@@ -18,11 +20,10 @@ function isRole(value: string | null): value is Role {
  * ECDH/AEAD handshake that actually secures the session happens directly
  * between the two devices once they have each other's address.
  */
-export class PairingSession {
-  constructor(
-    private readonly ctx: DurableObjectState,
-    private readonly env: unknown,
-  ) {}
+export class PairingSession extends DurableObject<Env> {
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+  }
 
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);

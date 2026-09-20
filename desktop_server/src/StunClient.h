@@ -23,7 +23,9 @@ struct Endpoint {
 // server-reflexive (public) address as seen by the STUN server. Must be
 // called on the same socket that will later be used for the peer-to-peer
 // session, since that's the NAT mapping that actually matters for hole
-// punching. Returns std::nullopt on timeout or a malformed response.
+// punching. Reads the reply directly from the socket, so no other thread may
+// be receiving on it (e.g. UdpServer::Run) while this runs. Returns
+// std::nullopt on timeout or a malformed response.
 std::optional<Endpoint> DiscoverPublicAddress(uintptr_t socketHandle, const std::string& stunHost, uint16_t stunPort,
                                                int timeoutMs);
 
